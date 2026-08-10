@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Renames default-titled Strava rides to 'Morning Commute' / 'Afternoon Commute'
-based on start/finish proximity to home and work."""
+based on start/finish proximity to home and work, and flags them as commutes."""
 
 import json
 import math
@@ -125,10 +125,10 @@ def main():
         api_request(
             f"https://www.strava.com/api/v3/activities/{act_id}",
             method="PUT",
-            data={"name": new_title},
+            data={"name": new_title, "commute": "true"},
             headers=headers,
         )
-        log(f"Renamed activity {act_id} '{name}' -> '{new_title}'")
+        log(f"Renamed activity {act_id} '{name}' -> '{new_title}' (commute=true)")
 
 
 if __name__ == "__main__":
