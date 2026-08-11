@@ -16,6 +16,7 @@ LOG_PATH = ROOT / "titler.log"
 
 DEFAULT_TITLE_RE = re.compile(r"^(morning|afternoon|evening|night|lunch)\s+ride$", re.IGNORECASE)
 LOOKBACK_HOURS = 6
+EBIKE_ELAPSED_SECONDS = 48 * 60
 
 
 def load_env():
@@ -122,15 +123,21 @@ def main():
             continue
 
         act_id = act["id"]
+        update_data = {"name": new_title, "commute": "true"}
+
+        elapsed_time = act.get("elapsed_time")
+        if elapsed_time is not None and elapsed_time < EBIKE_ELAPSED_SECONDS and act.get("type") != "EBikeRide":
+            update_data["sport_type"] = "EBikeRide"
+
         updated = api_request(
             f"https://www.strava.com/api/v3/activities/{act_id}",
             method="PUT",
-            data={"name": new_title, "commute": "true"},
+            data=update_data,
             headers=headers,
         )
         log(
             f"Renamed activity {act_id} '{name}' -> '{updated.get('name')}' "
-            f"(commute={updated.get('commute')})"
+            f"(commute={updated.get('commute')}, sport_type={updated.get('sport_type')})"
         )
 
 
