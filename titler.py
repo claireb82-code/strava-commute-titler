@@ -122,13 +122,16 @@ def main():
             continue
 
         act_id = act["id"]
-        api_request(
+        updated = api_request(
             f"https://www.strava.com/api/v3/activities/{act_id}",
             method="PUT",
             data={"name": new_title, "commute": "true"},
             headers=headers,
         )
-        log(f"Renamed activity {act_id} '{name}' -> '{new_title}' (commute=true)")
+        log(
+            f"Renamed activity {act_id} '{name}' -> '{updated.get('name')}' "
+            f"(commute={updated.get('commute')})"
+        )
 
 
 if __name__ == "__main__":
