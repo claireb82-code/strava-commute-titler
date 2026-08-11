@@ -1,7 +1,8 @@
 # strava-commute-titler
 
-Automatically renames default-titled Strava rides to **"Morning Commute"** or
-**"Afternoon Commute"** based on where the ride started and finished.
+Automatically detects and tags commute rides between home and work on
+Strava. This project only ever touches that specific case — it never
+modifies any other Strava activity or account setting.
 
 Strava gives new rides generic names like "Morning Ride", "Afternoon Ride",
 "Lunch Ride", etc. This script polls your recent activities, and for any
@@ -11,6 +12,12 @@ whether it started/finished near your home and work coordinates:
 - Start near home, finish near work → renamed to **Morning Commute**
 - Start near work, finish near home → renamed to **Afternoon Commute**
 - Anything else (already renamed, or doesn't match either pattern) is left untouched
+
+For a ride that matches one of the above, the script also:
+
+- Sets Strava's **commute** flag to `true`
+- Sets **sport_type to `EBikeRide`** if elapsed time is under 48 minutes
+  (assumed to be the e-bike), leaving longer rides as-is
 
 ## Setup
 
@@ -54,5 +61,8 @@ with `cron` on Linux.
   you've already renamed yourself is never overwritten.
 - Matching is idempotent: re-running against the same activities is always
   safe, since a renamed activity no longer matches the default-title pattern.
+- When updating `sport_type`, only that field is sent — not the legacy `type`
+  field. Sending both together in one request was found to make the value
+  unreliable to change again afterward.
 - `.env` is git-ignored and never committed — it contains your API secret,
   refresh token, and home/work coordinates.
