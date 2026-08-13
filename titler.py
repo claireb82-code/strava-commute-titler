@@ -16,7 +16,7 @@ LOG_PATH = ROOT / "titler.log"
 
 DEFAULT_TITLE_RE = re.compile(r"^(morning|afternoon|evening|night|lunch)\s+ride$", re.IGNORECASE)
 LOOKBACK_HOURS = 6
-EBIKE_ELAPSED_SECONDS = 48 * 60
+EBIKE_MOVING_SECONDS = 45 * 60
 
 
 def load_env():
@@ -125,8 +125,8 @@ def main():
         act_id = act["id"]
         update_data = {"name": new_title, "commute": "true"}
 
-        elapsed_time = act.get("elapsed_time")
-        if elapsed_time is not None and elapsed_time < EBIKE_ELAPSED_SECONDS and act.get("type") != "EBikeRide":
+        moving_time = act.get("moving_time")
+        if moving_time is not None and moving_time < EBIKE_MOVING_SECONDS and act.get("type") != "EBikeRide":
             update_data["sport_type"] = "EBikeRide"
 
         updated = api_request(
