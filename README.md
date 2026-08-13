@@ -16,8 +16,10 @@ whether it started/finished near your home and work coordinates:
 For a ride that matches one of the above, the script also:
 
 - Sets Strava's **commute** flag to `true`
-- Sets **sport_type to `EBikeRide`** if elapsed time is under 48 minutes
-  (assumed to be the e-bike), leaving longer rides as-is
+- Sets **sport_type to `EBikeRide`** if moving time is under 45 minutes
+  (assumed to be the e-bike), leaving longer rides as-is. Moving time is used
+  rather than elapsed time so a commute with a long stop (errand, traffic)
+  doesn't get missed just because the clock kept running.
 
 ## Setup
 
